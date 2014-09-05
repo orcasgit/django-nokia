@@ -13,11 +13,6 @@ from withingsapp.tasks import update_withings_data_task
 from .base import WithingsTestBase
 
 try:
-    from urllib.parse import urlencode
-except:  # Python 2.x fallback
-    from urllib import urlencode
-
-try:
     from unittest import mock
 except ImportError:  # Python 2.x fallback
     import mock
