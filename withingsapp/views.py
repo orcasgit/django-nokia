@@ -84,8 +84,8 @@ def complete(request):
         return redirect(reverse('withings-error'))
 
 
-    user_updates = {'access_token': auth.oauth_token,
-                    'access_token_secret': auth.oauth_secret,
+    user_updates = {'access_token': creds.access_token,
+                    'access_token_secret': creds.access_token_secret,
                     'withings_user_id': user_id}
     withings_user = WithingsUser.objects.filter(user=request.user)
     if withings_user.exists():
