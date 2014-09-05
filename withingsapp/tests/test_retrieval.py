@@ -3,12 +3,12 @@ import json
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from freezegun import freeze_time
-from mock import patch
 
 from withings import WithingsApi, WithingsMeasures
 
 from withingsapp import utils
 from withingsapp.models import WithingsUser, MeasureGroup, Measure
+from withingsapp.tasks import update_withings_data_task
 
 from .base import WithingsTestBase
 
@@ -17,6 +17,11 @@ try:
 except:  # Python 2.x fallback
     from urllib import urlencode
 
+try:
+    from unittest import mock
+except ImportError:  # Python 2.x fallback
+    import mock
+
 
 class TestRetrievalTask(WithingsTestBase):
     def setUp(self):
@@ -24,18 +29,18 @@ class TestRetrievalTask(WithingsTestBase):
         self.startdate = 1222930967
         self.enddate = 1222930969
 
-    def _receive_withings_notification(self):
+    def _receive_withings_notification(self, status_code=204):
         get_params = {
             'userid': self.withings_user.withings_user_id,
             'startdate': self.startdate,
             'enddate': self.enddate
         }
-        res = self.client.get('%s?%s' % (reverse('withings-notification'),
-                                         urlencode(get_params)))
-        assert res.status_code, 204
+        res = self.client.post('%s?%s' % (reverse('withings-notification'),
+                                          urlencode(get_params)))
+        self.assertEqual(res.status_code, status_code)
 
     @freeze_time("2012-01-14T12:00:01")
-    @patch('withingsapp.utils.get_withings_data')
+    @mock.patch('withingsapp.utils.get_withings_data')
     def test_notification(self, get_withings_data):
         # Check that celery tasks get made when a notification is received
         # from Withings.
@@ -98,8 +103,12 @@ class TestRetrievalTask(WithingsTestBase):
             user=self.user, date__gte=startdate, date__lte=enddate)
         self.assertEqual(measure_grps.count(), 3)
 
-    @patch('withingsapp.tasks.update_withings_data_task')
-    def test_problem_queueing_task(self, update_withings_data_task):
+    def test_notification_error(self):
+        res = self.client.post(reverse('withings-notification'))
+        self.assertEqual(res.status_code, 404)
+
+    def test_problem_queueing_task(self):
         # If queueing the task raises an exception, it doesn't propagate
+        update_withings_data_task.delay = mock.MagicMock()
         update_withings_data_task.delay.side_effect = Exception
-        self._receive_withings_notification()
+        self._receive_withings_notification(status_code=404)

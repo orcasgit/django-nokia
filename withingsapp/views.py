@@ -179,7 +179,7 @@ def logout(request):
 
 
 @csrf_exempt
-@require_GET
+@require_POST
 def notification(request):
     """ Receive notification from Withings.
 
@@ -191,12 +191,9 @@ def notification(request):
     """
 
     # The updates come in as a GET request with the necessary query params
-    try:
-        user_id = request.GET.get('userid')
-        startdate = request.GET.get('startdate')
-        enddate = request.GET.get('enddate')
-    except:
-        return redirect(reverse('withings-error'))
+    user_id = request.GET.get('userid')
+    startdate = request.GET.get('startdate')
+    enddate = request.GET.get('enddate')
 
     if not user_id or not startdate or not enddate:
         raise Http404
@@ -204,8 +201,9 @@ def notification(request):
         try:
             update_withings_data_task.delay(user_id)
         except:
-            return redirect(reverse('withings-error'))
-        return HttpResponse(status=204)
+            pass
+        else:
+            return HttpResponse(status=204)
 
     # if someone enters the url into the browser, raise a 404
     raise Http404
