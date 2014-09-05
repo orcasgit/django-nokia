@@ -153,7 +153,9 @@ class TestCompleteView(WithingsTestBase):
     def _get(self, use_token=True, use_verifier=True, **kwargs):
         WithingsApi.get_user = mock.MagicMock(return_value=self.get_user)
         WithingsAuth.get_credentials = mock.MagicMock(
-            return_value=WithingsCredentials())
+            return_value=WithingsCredentials(
+                access_token=self.access_token,
+                access_token_secret=self.access_token_secret))
         if use_token:
             self._set_session_vars(oauth_token=self.access_token,
                                    oauth_secret=self.access_token_secret)
