@@ -1,0 +1,5 @@
+withings
+
+celery==3.1.13
+python-dateutil==2.2
+requests_oauthlib==0.3.2

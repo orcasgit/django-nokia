@@ -1,0 +1,4 @@
+*.pyc
+.tox
+django_withings.egg-info
+.coverage
