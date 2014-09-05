@@ -98,10 +98,6 @@ def complete(request):
     api = utils.create_withings(**withings_user.get_user_data())
     request.session['withings_profile'] = api.get_user()
     if utils.get_setting('WITHINGS_SUBSCRIBE'):
-        try:
-            SUBSCRIBER_ID = utils.get_setting('WITHINGS_SUBSCRIBER_ID')
-        except ImproperlyConfigured:
-            return redirect(reverse('withings-error'))
         notification_url = reverse('withings-notification')
         for appli in [0, 1, 4, 16, 32]:
             api.subscribe(notification_url, 'django-withings', appli=appli)
