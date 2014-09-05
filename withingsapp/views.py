@@ -98,7 +98,8 @@ def complete(request):
     api = utils.create_withings(**withings_user.get_user_data())
     request.session['withings_profile'] = api.get_user()
     if utils.get_setting('WITHINGS_SUBSCRIBE'):
-        notification_url = reverse('withings-notification')
+        notification_url = request.build_absolute_uri(
+            reverse('withings-notification'))
         for appli in [0, 1, 4, 16, 32]:
             api.subscribe(notification_url, 'django-withings', appli=appli)
 
@@ -111,8 +112,8 @@ def complete(request):
 def create_withings_session(sender, request, user, **kwargs):
     """ If the user is a Withings user, update the profile in the session. """
 
-    if user.is_authenticated() and utils.is_integrated(user) and \
-            user.is_active:
+    if (user.is_authenticated() and utils.is_integrated(user) and
+            user.is_active):
         withings_user = WithingsUser.objects.filter(user=user)
         if withings_user.exists():
             api = utils.create_withings(**withings_user[0].get_user_data())
@@ -159,12 +160,12 @@ def logout(request):
     URL name:
         `withings-logout`
     """
-    user = request.user
-    withings_user = WithingsUser.objects.filter(user=user)
-    if utils.get_setting('WITHINGS_SUBSCRIBE'):
+    withings_user = WithingsUser.objects.filter(user=request.user)
+    if withings_user.exists() and utils.get_setting('WITHINGS_SUBSCRIBE'):
         try:
-            api = utils.create_withings(**withings_user.get_user_data())
-            notification_url = reverse('withings-notifications')
+            api = utils.create_withings(**withings_user[0].get_user_data())
+            notification_url = request.build_absolute_uri(
+                reverse('withings-notification'))
             for appli in [0, 1, 4, 16, 32]:
                 subs = api.list_subscriptions(appli=appli)
                 if len(subs) > 0:
@@ -204,7 +205,7 @@ def notification(request):
             update_withings_data_task.delay(user_id)
         except:
             return redirect(reverse('withings-error'))
-    return HttpResponse(status=204)
+        return HttpResponse(status=204)
 
     # if someone enters the url into the browser, raise a 404
     raise Http404

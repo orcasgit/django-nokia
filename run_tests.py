@@ -31,6 +31,7 @@ if not settings.configured:
 
         WITHINGS_CONSUMER_KEY='',
         WITHINGS_CONSUMER_SECRET='',
+        WITHINGS_SUBSCRIBE=True,
 
         LOGGING = {
             'version': 1,
