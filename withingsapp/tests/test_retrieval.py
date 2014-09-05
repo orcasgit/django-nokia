@@ -30,13 +30,13 @@ class TestRetrievalTask(WithingsTestBase):
         self.enddate = 1222930969
 
     def _receive_withings_notification(self, status_code=204):
-        get_params = {
+        post_params = {
             'userid': self.withings_user.withings_user_id,
             'startdate': self.startdate,
             'enddate': self.enddate
         }
-        res = self.client.post('%s?%s' % (reverse('withings-notification'),
-                                          urlencode(get_params)))
+        res = self.client.post(reverse('withings-notification'),
+                               data=post_params)
         self.assertEqual(res.status_code, status_code)
 
     @freeze_time("2012-01-14T12:00:01")
