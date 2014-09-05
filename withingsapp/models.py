@@ -71,7 +71,7 @@ class MeasureGroup(models.Model):
             for measure in withings_measure.measures:
                 Measure.objects.create(
                     group=measure_grp, value=measure['value'],
-                    _type=measure['type'], unit=measure['unit'])
+                    measure_type=measure['type'], unit=measure['unit'])
 
 
 @python_2_unicode_compatible
@@ -99,11 +99,11 @@ class Measure(models.Model):
 
     group = models.ForeignKey(MeasureGroup)
     value = models.IntegerField()
-    _type = models.IntegerField(choices=MEASURE_TYPES)
+    measure_type = models.IntegerField(choices=MEASURE_TYPES)
     unit = models.IntegerField()
 
     def get_value(self):
         return float(self.value) * pow(10, self.unit)
 
     def __str__(self):
-        return '%s: %s' % (self.get__type_display(), self.get_value())
+        return '%s: %s' % (self.get_measure_type_display(), self.get_value())

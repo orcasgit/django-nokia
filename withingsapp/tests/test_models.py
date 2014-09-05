@@ -126,11 +126,11 @@ class TestWithingsModels(WithingsTestBase):
             attrib=withings_measure.attrib, date=withings_measure.date,
             category=withings_measure.category)
         measure = Measure.objects.create(
-            group=measure_grp, value=79300, _type=1, unit=-3)
+            group=measure_grp, value=79300, measure_type=1, unit=-3)
         self.assertEqual(measure.__str__(), 'Weight (kg): 79.3')
         self.assertEqual(measure.value, 79300)
-        self.assertEqual(measure._type, 1)
+        self.assertEqual(measure.measure_type, 1)
         self.assertEqual(measure.unit, -3)
         self.assertEqual(measure.get_value(), 79.3)
-        self.assertEqual(measure.get__type_display(), 'Weight (kg)')
+        self.assertEqual(measure.get_measure_type_display(), 'Weight (kg)')
         self.assertEqual(measure.weight, 1)
