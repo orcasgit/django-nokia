@@ -8,6 +8,7 @@ import sys
 from celery import Celery
 from django.conf import settings
 
+PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
 if not settings.configured:
     settings.configure(
@@ -26,6 +27,10 @@ if not settings.configured:
         ],
         SECRET_KEY='something-secret',
         ROOT_URLCONF='withingsapp.urls',
+
+        TEMPLATE_DIRS=(
+            os.path.join(PROJECT_PATH, 'withingsapp', 'templates'),
+            os.path.join(PROJECT_PATH, 'withingsapp', 'tests', 'templates'),),
 
         CELERY_ALWAYS_EAGER=True,
 
