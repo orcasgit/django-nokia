@@ -175,10 +175,10 @@ class TestCompleteView(WithingsTestBase):
         withings_user = WithingsUser.objects.get()
         self.assertEqual(WithingsApi.get_user.call_count, 1)
         WithingsApi.get_user.assert_called_once_with()
-        self.assertEqual(WithingsApi.subscribe.call_count, 5)
+        self.assertEqual(WithingsApi.subscribe.call_count, 2)
         WithingsApi.subscribe.assert_has_calls([
-            mock.call('http://testserver/notification/', 'django-withings',
-                      appli=appli) for appli in [0, 1, 4, 16, 32]
+            mock.call('http://testserver/notification/%s/' % appli,
+                      'django-withings', appli=appli) for appli in [1, 4]
         ])
         self.assertEqual(withings_user.user, self.user)
         self.assertEqual(withings_user.access_token, self.access_token)
@@ -271,14 +271,14 @@ class TestLogoutView(WithingsTestBase):
     def test_get(self):
         """Logout view should remove associated WithingsUser and redirect."""
         response = self._get()
-        self.assertEqual(WithingsApi.list_subscriptions.call_count, 5)
+        self.assertEqual(WithingsApi.list_subscriptions.call_count, 2)
         WithingsApi.list_subscriptions.assert_has_calls([
-            mock.call(appli=appli) for appli in [0, 1, 4, 16, 32]
+            mock.call(appli=appli) for appli in [1, 4]
         ])
-        self.assertEqual(WithingsApi.unsubscribe.call_count, 5)
+        self.assertEqual(WithingsApi.unsubscribe.call_count, 2)
         WithingsApi.unsubscribe.assert_has_calls([
-            mock.call('http://testserver/notification/', appli=appli)
-            for appli in [0, 1, 4, 16, 32]
+            mock.call('http://testserver/notification/%s/' % appli,
+                      appli=appli) for appli in [1, 4]
         ])
         self.assertRedirectsNoFollow(response,
             utils.get_setting('WITHINGS_LOGIN_REDIRECT'))

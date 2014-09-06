@@ -51,21 +51,10 @@ WITHINGS_SUBSCRIBE
 
 :Default: ``False``
 
-When this setting is True, we will subscribe to user data. Withings will
-send notifications when the data changes and we will queue tasks to get
-the updated data. When requests for withings data are made to withingsapp, we
-will always pull the latest data from our own database instead of getting
-it directly from Withings. To use this feature, you will need to setup a
-celery worker to handle the tasks.
-
-Example celery configuration with rabbitmq as a backend:
-
-WITHINGS_QUEUE = "withingsapp_get_data"
-CELERY_ROUTES = {'withingsapp.tasks.update_withings_data_task':
-                 {'queue': WITHINGS_QUEUE}}
-BROKER_URL = "amqp://user:password@your_host:5672/your_vhost"
-import djcelery
-djcelery.setup_loader()
+When this setting is True, we will subscribe to user data (currently just
+weight, blood pressure, and heart rate). Withings will send notifications when
+the data changes and we will make an immediate API call to retrieve the data
+and store it locally.
 
 .. _WITHINGS_ERROR_TEMPLATE:
 

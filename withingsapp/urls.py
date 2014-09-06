@@ -13,5 +13,6 @@ urlpatterns = patterns(
     url(r'^logout/$', views.logout, name='withings-logout'),
 
     # Subscriber callback for notifications
-    url(r'^notification/$', views.notification, name='withings-notification')
+    url(r'^notification/(?P<appli>[14])/$', views.notification,
+        name='withings-notification')
 )

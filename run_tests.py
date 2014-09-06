@@ -32,8 +32,6 @@ if not settings.configured:
             os.path.join(PROJECT_PATH, 'withingsapp', 'templates'),
             os.path.join(PROJECT_PATH, 'withingsapp', 'tests', 'templates'),),
 
-        CELERY_ALWAYS_EAGER=True,
-
         WITHINGS_CONSUMER_KEY='',
         WITHINGS_CONSUMER_SECRET='',
         WITHINGS_SUBSCRIBE=True,
@@ -95,11 +93,6 @@ import django
 # In Django 1.7, we need to run setup first
 if hasattr(django, 'setup'):
     django.setup()
-
-
-app = Celery('tests')
-app.config_from_object('django.conf:settings')
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
 if __name__ == '__main__':

@@ -8,7 +8,6 @@ from withings import WithingsApi, WithingsMeasures
 
 from withingsapp import utils
 from withingsapp.models import WithingsUser, MeasureGroup, Measure
-from withingsapp.tasks import update_withings_data_task
 
 from .base import WithingsTestBase
 
@@ -30,8 +29,9 @@ class TestRetrievalTask(WithingsTestBase):
             'startdate': self.startdate,
             'enddate': self.enddate
         }
-        res = self.client.post(reverse('withings-notification'),
-                               data=post_params)
+        res = self.client.post(
+            reverse('withings-notification', kwargs={'appli': 1}),
+            data=post_params)
         self.assertEqual(res.status_code, status_code)
 
     @freeze_time("2012-01-14T12:00:01")
@@ -99,11 +99,6 @@ class TestRetrievalTask(WithingsTestBase):
         self.assertEqual(measure_grps.count(), 3)
 
     def test_notification_error(self):
-        res = self.client.post(reverse('withings-notification'))
+        res = self.client.post(
+            reverse('withings-notification', kwargs={'appli': 4}))
         self.assertEqual(res.status_code, 404)
-
-    def test_problem_queueing_task(self):
-        # If queueing the task raises an exception, it doesn't propagate
-        update_withings_data_task.delay = mock.MagicMock()
-        update_withings_data_task.delay.side_effect = Exception
-        self._receive_withings_notification(status_code=404)

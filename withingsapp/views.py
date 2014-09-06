@@ -14,8 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from . import utils
-from .models import WithingsUser
-from .tasks import update_withings_data_task
+from .models import WithingsUser, MeasureGroup
 
 
 @login_required
@@ -98,9 +97,9 @@ def complete(request):
     api = utils.create_withings(**withings_user.get_user_data())
     request.session['withings_profile'] = api.get_user()
     if utils.get_setting('WITHINGS_SUBSCRIBE'):
-        notification_url = request.build_absolute_uri(
-            reverse('withings-notification'))
-        for appli in [0, 1, 4, 16, 32]:
+        for appli in [1, 4]:
+            notification_url = request.build_absolute_uri(
+                reverse('withings-notification', kwargs={'appli': appli}))
             api.subscribe(notification_url, 'django-withings', appli=appli)
 
     next_url = request.session.pop('withings_next', None) or utils.get_setting(
@@ -164,9 +163,9 @@ def logout(request):
     if withings_user.exists() and utils.get_setting('WITHINGS_SUBSCRIBE'):
         try:
             api = utils.create_withings(**withings_user[0].get_user_data())
-            notification_url = request.build_absolute_uri(
-                reverse('withings-notification'))
-            for appli in [0, 1, 4, 16, 32]:
+            for appli in [1, 4]:
+                notification_url = request.build_absolute_uri(
+                    reverse('withings-notification', kwargs={'appli': appli}))
                 subs = api.list_subscriptions(appli=appli)
                 if len(subs) > 0:
                     api.unsubscribe(notification_url, appli=appli)
@@ -180,7 +179,7 @@ def logout(request):
 
 @csrf_exempt
 @require_POST
-def notification(request):
+def notification(request, appli):
     """ Receive notification from Withings.
 
     Create celery tasks to get the data. More information here:
@@ -190,18 +189,19 @@ def notification(request):
         `withings-notification`
     """
 
-    # The updates come in as a GET request with the necessary query params
-    user_id = request.POST.get('userid')
-    startdate = request.POST.get('startdate')
-    enddate = request.POST.get('enddate')
+    # The updates come in as a POST request with the necessary data
+    uid = request.POST.get('userid')
 
-    if user_id or startdate or enddate:
-        try:
-            update_withings_data_task.delay(user_id)
-        except:
-            pass
-        else:
-            return HttpResponse(status=204)
+    if uid and request.POST.get('startdate') and request.POST.get('enddate'):
+        for user in WithingsUser.objects.filter(withings_user_id=uid):
+            kwargs = {}
+            if user.last_update:
+                kwargs['lastupdate'] = user.last_update
+            measures = utils.get_withings_data(user, **kwargs)
+            MeasureGroup.create_from_measures(user.user, measures)
+            user.last_update = timezone.now()
+            user.save()
+        return HttpResponse(status=204)
 
     # if someone enters the url into the browser, raise a 404
     raise Http404
