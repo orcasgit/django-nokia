@@ -5,7 +5,6 @@ import optparse
 import os
 import sys
 
-from celery import Celery
 from django.conf import settings
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
