@@ -114,8 +114,8 @@ class TestWithingsModels(WithingsTestBase):
             MeasureGroup.create_from_measures(self.user, measures)
             self.assertEqual(MeasureGroup.objects.count(), 3)
             self.assertEqual(Measure.objects.count(), 5)
-        except IntegrityError, e:
-            assert False, e
+        except IntegrityError:
+            assert False, 'Not ignoring duplicates'
         # Can't create MeasureGroup with the same user and grpid
         self.assertRaises(IntegrityError, MeasureGroup.objects.create,
             user=self.user, grpid=2908, attrib=1, date=measures[0].date,
