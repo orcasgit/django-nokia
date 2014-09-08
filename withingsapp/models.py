@@ -57,6 +57,9 @@ class MeasureGroup(models.Model):
     date = models.DateField()
     category = models.IntegerField(choices=CATEGORY_TYPES)
 
+    class Meta:
+        unique_together = ('user', 'grpid',)
+
     def __str__(self):
         return '%s: %s' % (self.date.strftime('%Y-%m-%d'),
                            self.get_category_display())
@@ -64,6 +67,9 @@ class MeasureGroup(models.Model):
     @classmethod
     def create_from_measures(cls, user, measures):
         for withings_measure in measures:
+            if MeasureGroup.objects.filter(grpid=withings_measure.grpid,
+                                           user=user).exists():
+                continue
             measure_grp = MeasureGroup.objects.create(
                 user=user, grpid=withings_measure.grpid,
                 attrib=withings_measure.attrib, date=withings_measure.date,

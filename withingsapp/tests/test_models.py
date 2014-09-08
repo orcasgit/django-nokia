@@ -1,5 +1,6 @@
 import time
 
+from django.db import IntegrityError
 from withings import WithingsCredentials, WithingsMeasures
 from withingsapp.models import WithingsUser, Measure, MeasureGroup
 
@@ -108,6 +109,17 @@ class TestWithingsModels(WithingsTestBase):
             MeasureGroup.objects.get(grpid=2909).measure_set.count(), 1)
         self.assertEqual(
             MeasureGroup.objects.get(grpid=2910).measure_set.count(), 3)
+        # create_from_measures should silently ignore duplicates
+        try:
+            MeasureGroup.create_from_measures(self.user, measures)
+            self.assertEqual(MeasureGroup.objects.count(), 3)
+            self.assertEqual(Measure.objects.count(), 5)
+        except IntegrityError, e:
+            assert False, e
+        # Can't create MeasureGroup with the same user and grpid
+        self.assertRaises(IntegrityError, MeasureGroup.objects.create,
+            user=self.user, grpid=2908, attrib=1, date=measures[0].date,
+            category=2)
 
     def test_measure(self):
         """ Create a Measure model, check attributes and methods """
