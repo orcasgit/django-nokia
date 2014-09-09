@@ -39,12 +39,15 @@ class TestWithingsModels(WithingsTestBase):
         measure = measures[0]
         measure_grp = MeasureGroup.objects.create(
             user=self.user, grpid=measure.grpid, attrib=measure.attrib,
-            date=measure.date, category=measure.category)
+            date=measure.date, category=measure.category,
+            updatetime=measures.updatetime)
         self.assertEqual(measure_grp.__str__(),
                          '2008-10-02: Real measurements')
         self.assertEqual(measure_grp.grpid, 2909)
         self.assertEqual(measure_grp.attrib, 0)
         self.assertEqual(time.mktime(measure_grp.date.timetuple()), 1222930968)
+        self.assertEqual(time.mktime(measure_grp.updatetime.timetuple()),
+                                     1249409679)
         self.assertEqual(measure_grp.category, 1)
         self.assertEqual(measure_grp.get_attrib_display(),
                          'Captured by a device, not ambiguous')
@@ -119,11 +122,11 @@ class TestWithingsModels(WithingsTestBase):
         # Can't create MeasureGroup with the same user and grpid
         self.assertRaises(IntegrityError, MeasureGroup.objects.create,
             user=self.user, grpid=2908, attrib=1, date=measures[0].date,
-            category=2)
+            updatetime=measures.updatetime, category=2)
 
     def test_measure(self):
         """ Create a Measure model, check attributes and methods """
-        withings_measure = WithingsMeasures({
+        withings_measures = WithingsMeasures({
             "updatetime": 1249409679,
             "measuregrps": [{
                  "grpid": 2909,
@@ -132,11 +135,13 @@ class TestWithingsModels(WithingsTestBase):
                  "category": 1,
                  "measures": []
             }]
-        })[0]
+        })
+        withings_measure = withings_measures[0]
         measure_grp = MeasureGroup.objects.create(
             user=self.user, grpid=withings_measure.grpid,
             attrib=withings_measure.attrib, date=withings_measure.date,
-            category=withings_measure.category)
+            category=withings_measure.category,
+            updatetime=withings_measures.updatetime)
         measure = Measure.objects.create(
             group=measure_grp, value=79300, measure_type=1, unit=-3)
         self.assertEqual(measure.__str__(), 'Weight (kg): 79.3')

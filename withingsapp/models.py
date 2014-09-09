@@ -54,7 +54,8 @@ class MeasureGroup(models.Model):
     user = models.ForeignKey(UserModel)
     grpid = models.IntegerField()
     attrib = models.IntegerField(choices=ATTRIB_TYPES)
-    date = models.DateField()
+    date = models.DateTimeField()
+    updatetime = models.DateTimeField()
     category = models.IntegerField(choices=CATEGORY_TYPES)
 
     class Meta:
@@ -73,7 +74,8 @@ class MeasureGroup(models.Model):
             measure_grp = MeasureGroup.objects.create(
                 user=user, grpid=withings_measure.grpid,
                 attrib=withings_measure.attrib, date=withings_measure.date,
-                category=withings_measure.category)
+                category=withings_measure.category,
+                updatetime=measures.updatetime)
             for measure in withings_measure.measures:
                 Measure.objects.create(
                     group=measure_grp, value=measure['value'],
