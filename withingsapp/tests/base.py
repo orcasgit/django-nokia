@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from withings import WithingsApi, WithingsCredentials
+from withings import WithingsApi, WithingsCredentials, WithingsMeasures
 
 from withingsapp.models import WithingsUser
 
@@ -29,6 +29,49 @@ class WithingsTestBase(TestCase):
         self.get_user = {
             'id': 1111111, 'birthdate': 364305600, 'lastname': 'Baggins',
             'ispublic': 255, 'firstname': 'Frodo', 'fatmethod': 131}
+        self.get_measures = WithingsMeasures({
+            "updatetime": 1249409679,
+            "measuregrps": [{
+                "grpid": 2909,
+                "attrib": 0,
+                "date": 1222930968,
+                "category": 1,
+                "measures": [{
+                    "value": 79300,
+                    "type": 1,
+                    "unit": -3
+                }]
+            }, {
+                "grpid": 2910,
+                "attrib": 1,
+                "date": 1222930968,
+                "category": 1,
+                "measures": [{
+                    "value": 652,
+                    "type": 5,
+                    "unit": -1
+                }, {
+                    "value": 178,
+                    "type": 6,
+                    "unit": -1
+                }, {
+                    "value": 14125,
+                    "type": 8,
+                    "unit": -3
+                }]
+            },
+            {
+                "grpid": 2908,
+                "attrib": 0,
+                "date": 1222930968,
+                "category": 1,
+                "measures": [{
+                    "value": 173,
+                    "type": 4,
+                    "unit": -2
+                }]
+            }]
+        })
 
         self.client.login(username=self.username, password=self.password)
 

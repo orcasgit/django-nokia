@@ -96,6 +96,9 @@ def complete(request):
     # Add the Withings user info to the session
     api = utils.create_withings(**withings_user.get_user_data())
     request.session['withings_profile'] = api.get_user()
+    MeasureGroup.create_from_measures(request.user, api.get_measures())
+    request.user.last_update = timezone.now()
+    request.user.save()
     if utils.get_setting('WITHINGS_SUBSCRIBE'):
         for appli in [1, 4]:
             notification_url = request.build_absolute_uri(

@@ -6,7 +6,7 @@ from withings import WithingsApi, WithingsAuth, WithingsCredentials
 
 from withingsapp import utils
 from withingsapp.decorators import withings_integration_warning
-from withingsapp.models import WithingsUser
+from withingsapp.models import WithingsUser, MeasureGroup, Measure
 
 from .base import WithingsTestBase
 
@@ -152,6 +152,8 @@ class TestCompleteView(WithingsTestBase):
 
     def _get(self, use_token=True, use_verifier=True, **kwargs):
         WithingsApi.get_user = mock.MagicMock(return_value=self.get_user)
+        WithingsApi.get_measures = mock.MagicMock(
+            return_value=self.get_measures)
         WithingsApi.subscribe = mock.MagicMock(return_value=None)
         WithingsAuth.get_credentials = mock.MagicMock(
             return_value=WithingsCredentials(
@@ -168,7 +170,12 @@ class TestCompleteView(WithingsTestBase):
                                                   **kwargs)
 
     def test_get(self):
-        """Complete view should fetch & store user's access credentials."""
+        """
+        Complete view should fetch & store user's access credentials, add the
+        user's profile to the session, and retrieve all past body measures.
+        """
+        self.assertEqual(MeasureGroup.objects.count(), 0)
+        self.assertEqual(Measure.objects.count(), 0)
         response = self._get()
         self.assertRedirectsNoFollow(
             response, utils.get_setting('WITHINGS_LOGIN_REDIRECT'))
@@ -185,6 +192,9 @@ class TestCompleteView(WithingsTestBase):
         self.assertEqual(withings_user.access_token_secret,
                          self.access_token_secret)
         self.assertEqual(withings_user.withings_user_id, self.withings_user_id)
+        WithingsApi.get_measures.assert_called_once_with()
+        self.assertEqual(MeasureGroup.objects.count(), 3)
+        self.assertEqual(Measure.objects.count(), 5)
 
     def test_unauthenticated(self):
         """User must be logged in to access Complete view."""

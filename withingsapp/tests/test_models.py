@@ -58,49 +58,7 @@ class TestWithingsModels(WithingsTestBase):
 
         # Test the create_from_measures function
         MeasureGroup.objects.all().delete()
-        measures = WithingsMeasures({
-            "updatetime": 1249409679,
-            "measuregrps": [{
-                "grpid": 2909,
-                "attrib": 0,
-                "date": 1222930968,
-                "category": 1,
-                "measures": [{
-                    "value": 79300,
-                    "type": 1,
-                    "unit": -3
-                }]
-            }, {
-                "grpid": 2910,
-                "attrib": 1,
-                "date": 1222930968,
-                "category": 1,
-                "measures": [{
-                    "value": 652,
-                    "type": 5,
-                    "unit": -1
-                }, {
-                    "value": 178,
-                    "type": 6,
-                    "unit": -1
-                }, {
-                    "value": 14125,
-                    "type": 8,
-                    "unit": -3
-                }]
-            },
-            {
-                "grpid": 2908,
-                "attrib": 0,
-                "date": 1222930968,
-                "category": 1,
-                "measures": [{
-                    "value": 173,
-                    "type": 4,
-                    "unit": -2
-                }]
-            }]
-        })
+        measures = self.get_measures
         self.assertEqual(MeasureGroup.objects.count(), 0)
         self.assertEqual(Measure.objects.count(), 0)
         MeasureGroup.create_from_measures(self.user, measures)
