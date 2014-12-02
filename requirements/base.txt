@@ -1,4 +1,4 @@
 withings
 
-python-dateutil==2.2
+python-dateutil==2.3
 requests-oauthlib==0.4.2
