@@ -10,7 +10,7 @@ setup(
     author="orcas",
     author_email="bpitcher@orcasinc.com",
     packages=find_packages(),
-    install_requires=["setuptools"] + required,
+    install_requires=["setuptools<8.0"] + required,
     dependency_links=[
         'https://github.com/orcasgit/python-withings/archive/develop.zip#egg=withings-0.4.0'
     ],
