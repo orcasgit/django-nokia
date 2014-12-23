@@ -12,7 +12,7 @@ setup(
     packages=find_packages(),
     install_requires=["setuptools"] + required,
     dependency_links=[
-        'https://github.com/orcasgit/python-withings/archive/develop.zip#egg=withings-0.2dev'
+        'https://github.com/orcasgit/python-withings/archive/develop.zip#egg=withings-0.4.0'
     ],
     include_package_data=True,
     url="https://github.com/orcasgit/django-withings/",

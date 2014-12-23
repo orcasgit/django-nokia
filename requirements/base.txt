@@ -1,4 +1,4 @@
-withings==0.2dev
+withings==0.4.0
 
 python-dateutil==2.3
 requests-oauthlib==0.4.2
