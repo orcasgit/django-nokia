@@ -1,4 +1,4 @@
-withings
+https://github.com/orcasgit/python-withings/archive/develop.zip#egg=withings-0.1
 
 python-dateutil==2.3
 requests-oauthlib==0.4.2

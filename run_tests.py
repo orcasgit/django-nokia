@@ -34,6 +34,8 @@ if not settings.configured:
         WITHINGS_CONSUMER_KEY='',
         WITHINGS_CONSUMER_SECRET='',
         WITHINGS_SUBSCRIBE=True,
+        USE_TZ=True,
+        TIME_ZONE='America/Chicago',
 
         LOGGING = {
             'version': 1,

@@ -1,3 +1,5 @@
+import arrow
+
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -62,7 +64,7 @@ class MeasureGroup(models.Model):
         unique_together = ('user', 'grpid',)
 
     def __str__(self):
-        return '%s: %s' % (self.date.strftime('%Y-%m-%d'),
+        return '%s: %s' % (self.date.date().isoformat(),
                            self.get_category_display())
 
     @classmethod
@@ -73,9 +75,10 @@ class MeasureGroup(models.Model):
                 continue
             measure_grp = MeasureGroup.objects.create(
                 user=user, grpid=withings_measure.grpid,
-                attrib=withings_measure.attrib, date=withings_measure.date,
+                attrib=withings_measure.attrib,
                 category=withings_measure.category,
-                updatetime=measures.updatetime)
+                date=withings_measure.date.datetime,
+                updatetime=measures.updatetime.datetime)
             for measure in withings_measure.measures:
                 Measure.objects.create(
                     group=measure_grp, value=measure['value'],

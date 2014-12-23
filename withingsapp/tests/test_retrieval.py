@@ -34,7 +34,7 @@ class TestRetrievalTask(WithingsTestBase):
             data=post_params)
         self.assertEqual(res.status_code, status_code)
 
-    @freeze_time("2012-01-14T12:00:01")
+    @freeze_time("2012-01-14T12:00:01", tz_offset=-6)
     @mock.patch('withingsapp.utils.get_withings_data')
     def test_notification(self, get_withings_data):
         # Check that celery tasks get made when a notification is received
@@ -89,7 +89,7 @@ class TestRetrievalTask(WithingsTestBase):
         self.assertEqual(get_withings_data.call_count, 1)
         self.withings_user = WithingsUser.objects.get(id=self.withings_user.id)
         self.assertEqual(self.withings_user.last_update.isoformat(),
-                         "2012-01-14T12:00:01")
+                         "2012-01-14T12:00:01+00:00")
         self.assertEqual(MeasureGroup.objects.count(), 3)
         self.assertEqual(Measure.objects.count(), 5)
         startdate = datetime.fromtimestamp(self.startdate)
