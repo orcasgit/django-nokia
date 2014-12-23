@@ -11,6 +11,9 @@ setup(
     author_email="bpitcher@orcasinc.com",
     packages=find_packages(),
     install_requires=["setuptools"] + required,
+    dependency_links=[
+        'https://github.com/orcasgit/python-withings/archive/develop.zip#egg=withings-0.2dev'
+    ],
     include_package_data=True,
     url="https://github.com/orcasgit/django-withings/",
     license="License :: OSI Approved :: Apache Software License",
