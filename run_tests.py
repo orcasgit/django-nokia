@@ -80,7 +80,7 @@ def run_tests():
         cov.start()
 
     TestRunner = get_runner(settings)
-    test_runner = TestRunner(verbosity=1, interactive=True, failfast=False)
+    test_runner = TestRunner(verbosity=2, interactive=True, failfast=False)
     exit_val = test_runner.run_tests(tests)
 
     if covlevel:

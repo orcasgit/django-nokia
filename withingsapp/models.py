@@ -64,7 +64,7 @@ class MeasureGroup(models.Model):
         unique_together = ('user', 'grpid',)
 
     def __str__(self):
-        return '%s: %s' % (self.date.date().isoformat(),
+        return '%s: %s' % (self.date.date().isoformat() if self.date else None,
                            self.get_category_display())
 
     @classmethod

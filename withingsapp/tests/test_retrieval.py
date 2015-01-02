@@ -1,3 +1,4 @@
+import arrow
 import json
 
 from datetime import datetime
@@ -92,8 +93,8 @@ class TestRetrievalTask(WithingsTestBase):
                          "2012-01-14T12:00:01+00:00")
         self.assertEqual(MeasureGroup.objects.count(), 3)
         self.assertEqual(Measure.objects.count(), 5)
-        startdate = datetime.fromtimestamp(self.startdate)
-        enddate = datetime.fromtimestamp(self.enddate)
+        startdate = arrow.get(self.startdate).datetime
+        enddate = arrow.get(self.enddate).datetime
         measure_grps = MeasureGroup.objects.filter(
             user=self.user, date__gte=startdate, date__lte=enddate)
         self.assertEqual(measure_grps.count(), 3)
