@@ -7,7 +7,7 @@ Settings
 .. _WITHINGS_CONSUMER_KEY:
 
 WITHINGS_CONSUMER_KEY
--------------------
+---------------------
 
 The key assigned to your app by Withings when you register your app at
 `the Withings developer site <https://account.withings.com/connectionuser/account_create>`_. You must specify a
@@ -19,7 +19,7 @@ non-null value for this setting.
 .. _WITHINGS_CONSUMER_SECRET:
 
 WITHINGS_CONSUMER_SECRET
-----------------------
+------------------------
 
 The secret that goes with the WITHINGS_CONSUMER_KEY. You must specify a non-null
 value for this setting.
@@ -27,7 +27,7 @@ value for this setting.
 .. _WITHINGS_LOGIN_REDIRECT:
 
 WITHINGS_LOGIN_REDIRECT
----------------------
+-----------------------
 
 :Default:  ``'/'``
 
@@ -37,7 +37,7 @@ no forwarding URL is given in the 'withings_next' session variable.
 .. _WITHINGS_LOGOUT_REDIRECT:
 
 WITHINGS_LOGOUT_REDIRECT
-----------------------
+------------------------
 
 :Default: ``'/'``
 
@@ -47,7 +47,7 @@ credentials, if no forwarding URL is given in the 'next' GET parameter.
 .. _WITHINGS_SUBSCRIBE:
 
 WITHINGS_SUBSCRIBE
-----------------
+------------------
 
 :Default: ``False``
 
@@ -59,7 +59,7 @@ and store it locally.
 .. _WITHINGS_ERROR_TEMPLATE:
 
 WITHINGS_ERROR_TEMPLATE
----------------------
+-----------------------
 
 :Default:  ``'withings/error.html'``
 
@@ -68,7 +68,7 @@ The template used to report an error integrating the user's Withings.
 .. _WITHINGS_DECORATOR_MESSAGE:
 
 WITHINGS_DECORATOR_MESSAGE
-------------------------
+--------------------------
 
 :Default: ``'This page requires Withings integration.'``
 

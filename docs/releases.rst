@@ -1,7 +1,7 @@
 Release history
 ==================
 
-0.0.1
---------
+Version 0.0.1 (2014-09-04)
+--------------------------
 
-Initial release.
+* Initial release
