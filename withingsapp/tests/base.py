@@ -8,6 +8,7 @@ except:
     from urllib import urlencode
     from string import letters as ascii_letters
 
+import django
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -105,7 +106,7 @@ class WithingsTestBase(TestCase):
         loading the page at that URL.
         """
         self.assertEqual(response.status_code, status_code)
-        full_url = self.TEST_SERVER + url
+        full_url = (self.TEST_SERVER if django.VERSION < (1, 9,) else '') + url
         self.assertEqual(response._headers['location'][1], full_url)
 
     def _get(self, url_name=None, url_kwargs=None, get_kwargs=None, **kwargs):

@@ -1,11 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from . import views
 
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     # OAuth authentication
     url(r'^login/$', views.login, name='withings-login'),
     url(r'^complete/$', views.complete, name='withings-complete'),
@@ -15,4 +13,4 @@ urlpatterns = patterns(
     # Subscriber callback for notifications
     url(r'^notification/(?P<appli>[14])/$', views.notification,
         name='withings-notification')
-)
+]

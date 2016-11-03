@@ -6,58 +6,11 @@ import os
 import sys
 
 from django.conf import settings
+from django.test.utils import get_runner
 
-PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
 if not settings.configured:
-    settings.configure(
-        DATABASES={
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': 'django_withings',
-            }
-        },
-        INSTALLED_APPS=[
-            'django.contrib.auth',
-            'django.contrib.contenttypes',
-            'django.contrib.messages',
-            'django.contrib.sessions',
-            'withingsapp',
-        ],
-        SECRET_KEY='something-secret',
-        ROOT_URLCONF='withingsapp.urls',
-
-        TEMPLATE_DIRS=(
-            os.path.join(PROJECT_PATH, 'withingsapp', 'templates'),
-            os.path.join(PROJECT_PATH, 'withingsapp', 'tests', 'templates'),),
-
-        WITHINGS_CONSUMER_KEY='',
-        WITHINGS_CONSUMER_SECRET='',
-        WITHINGS_SUBSCRIBE=True,
-        USE_TZ=True,
-        TIME_ZONE='America/Chicago',
-
-        LOGGING = {
-            'version': 1,
-            'handlers': {
-                'null': {
-                    'level': 'DEBUG',
-                    'class': 'django.utils.log.NullHandler',
-                },
-            },
-            'loggers': {
-                'withingsapp.tasks': {'handlers': ['null'], 'level': 'DEBUG'},
-            },
-        },
-
-        MIDDLEWARE_CLASSES = (
-            'django.contrib.sessions.middleware.SessionMiddleware',
-            'django.contrib.auth.middleware.AuthenticationMiddleware',
-        )
-    )
-
-
-from django.test.utils import get_runner
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
 
 
 def run_tests():
