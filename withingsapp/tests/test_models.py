@@ -65,11 +65,11 @@ class TestWithingsModels(WithingsTestBase):
         self.assertEqual(MeasureGroup.objects.count(), 3)
         self.assertEqual(Measure.objects.count(), 5)
         self.assertEqual(
-            MeasureGroup.objects.get(grpid=2908).measure_set.count(), 1)
+            MeasureGroup.objects.get(grpid=2908).measures.count(), 1)
         self.assertEqual(
-            MeasureGroup.objects.get(grpid=2909).measure_set.count(), 1)
+            MeasureGroup.objects.get(grpid=2909).measures.count(), 1)
         self.assertEqual(
-            MeasureGroup.objects.get(grpid=2910).measure_set.count(), 3)
+            MeasureGroup.objects.get(grpid=2910).measures.count(), 3)
         # create_from_measures should silently ignore duplicates
         try:
             MeasureGroup.create_from_measures(self.user, measures)

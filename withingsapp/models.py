@@ -129,7 +129,9 @@ class Measure(models.Model):
     )
 
     group = models.ForeignKey(
-        MeasureGroup, help_text="The measurement's group")
+        MeasureGroup,
+        related_name='measures',
+        help_text="The measurement's group")
     value = models.IntegerField(
         help_text=(
             'Value for the measure in S.I units (kilogram, meters, etc.). '
