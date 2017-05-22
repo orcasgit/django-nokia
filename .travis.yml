@@ -1,25 +1,13 @@
 language: python
-python: 3.5
-env:
-  - TOX_ENV=pypy-trunk
-  - TOX_ENV=pypy-1.10.X
-  - TOX_ENV=pypy-1.9.X
-  - TOX_ENV=pypy-1.8.X
-  - TOX_ENV=py35-trunk
-  - TOX_ENV=py35-1.10.X
-  - TOX_ENV=py35-1.9.X
-  - TOX_ENV=py35-1.8.X
-  - TOX_ENV=py34-trunk
-  - TOX_ENV=py34-1.10.X
-  - TOX_ENV=py34-1.9.X
-  - TOX_ENV=py34-1.8.X
-  - TOX_ENV=py33-1.8.X
-  - TOX_ENV=py27-trunk
-  - TOX_ENV=py27-1.10.X
-  - TOX_ENV=py27-1.9.X
-  - TOX_ENV=py27-1.8.X
-  - TOX_ENV=docs
+python:
+  - pypy
+  - pypy3.3-5.2-alpha1
+  - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.6
 install:
-  - pip install coveralls tox
-script: tox -e $TOX_ENV
+  - pip install coveralls tox-travis
+script: tox
 after_success: coveralls
