@@ -1,5 +1,3 @@
-import sys
-
 from setuptools import setup, find_packages
 
 required = [line for line in open('requirements/base.txt').read().split("\n")]
@@ -11,9 +9,6 @@ setup(
     author_email="bpitcher@orcasinc.com",
     packages=find_packages(),
     install_requires=["setuptools"] + required,
-    dependency_links=[
-        'https://github.com/orcasgit/python-withings/archive/develop.zip#egg=withings-0.4.0'
-    ],
     include_package_data=True,
     url="https://github.com/orcasgit/django-withings/",
     license="License :: OSI Approved :: Apache Software License",
