@@ -1,10 +1,10 @@
-.. django-withings documentation master file, created by
+.. django-nokia documentation master file, created by
    sphinx-quickstart on Tue Oct  9 08:03:08 2012.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to django-withings's documentation!
-===========================================
+Welcome to django-nokia's documentation!
+========================================
 
 Contents:
 
@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    starting
+   migrate_from_withings
    settings
    views
    templatetags
@@ -19,11 +20,11 @@ Contents:
    links
    releases
 
-Django-withings is a Django app for integrating a user's Withings data into your
+Django-nokia is a Django app for integrating a user's Nokia data into your
 site.
 
 It handles the details of getting your app authorized to access your user's
-Withings data via the Withings web API.
+Nokia data via the Nokia Health API.
 
 Indices and tables
 ==================

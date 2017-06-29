@@ -1,4 +1,4 @@
 include README.md
 include LICENSE.txt
-recursive-include withingsapp/templates *
+recursive-include nokiaapp/templates *
 include requirements/*

@@ -1,15 +1,15 @@
 Views, decorators, and templates
-===================================
+================================
 
-There are several views and decorators your site will use to drive Withings
+There are several views and decorators your site will use to drive Nokia
 integration.
 
-.. autofunction:: withingsapp.decorators.withings_integration_warning
+.. autofunction:: nokiaapp.decorators.nokia_integration_warning
 
-.. autofunction:: withingsapp.views.login
+.. autofunction:: nokiaapp.views.login
 
-.. autofunction:: withingsapp.views.complete
+.. autofunction:: nokiaapp.views.complete
 
-.. autofunction:: withingsapp.views.error
+.. autofunction:: nokiaapp.views.error
 
-.. autofunction:: withingsapp.views.logout
+.. autofunction:: nokiaapp.views.logout

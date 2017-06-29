@@ -1,5 +1,5 @@
 *.pyc
 .tox
-django_withings.egg-info
+django_nokia.egg-info
 .coverage
 docs/_build

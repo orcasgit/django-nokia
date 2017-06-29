@@ -1,31 +1,31 @@
 import arrow
 
 from django.db import IntegrityError
-from withings import WithingsCredentials, WithingsMeasures
-from withingsapp.models import WithingsUser, Measure, MeasureGroup
+from nokia import NokiaCredentials, NokiaMeasures
+from nokiaapp.models import NokiaUser, Measure, MeasureGroup
 
-from .base import WithingsTestBase
+from .base import NokiaTestBase
 
 
-class TestWithingsModels(WithingsTestBase):
-    def test_withings_user(self):
+class TestNokiaModels(NokiaTestBase):
+    def test_nokia_user(self):
         """
-        WithingsUser was already created in base, now test the
+        NokiaUser was already created in base, now test the
         properties
         """
-        self.assertEqual(self.withings_user.user, self.user)
-        self.assertEqual(self.withings_user.__str__(), self.username)
-        self.assertEqual(self.withings_user.last_update, None)
-        data = self.withings_user.get_user_data()
+        self.assertEqual(self.nokia_user.user, self.user)
+        self.assertEqual(self.nokia_user.__str__(), self.username)
+        self.assertEqual(self.nokia_user.last_update, None)
+        data = self.nokia_user.get_user_data()
         self.assertEqual(type(data), dict)
-        self.assertEqual(data['access_token'], self.withings_user.access_token)
+        self.assertEqual(data['access_token'], self.nokia_user.access_token)
         self.assertEqual(data['access_token_secret'],
-                         self.withings_user.access_token_secret)
-        self.assertEqual(data['user_id'], self.withings_user.withings_user_id)
+                         self.nokia_user.access_token_secret)
+        self.assertEqual(data['user_id'], self.nokia_user.nokia_user_id)
 
     def test_measure_group(self):
         """ Create a MeasureGroup model, check attributes and methods """
-        measures = WithingsMeasures({
+        measures = NokiaMeasures({
             "updatetime": 1249409679,
             "measuregrps": [{
                  "grpid": 2909,
@@ -85,7 +85,7 @@ class TestWithingsModels(WithingsTestBase):
 
     def test_measure(self):
         """ Create a Measure model, check attributes and methods """
-        withings_measures = WithingsMeasures({
+        nokia_measures = NokiaMeasures({
             "updatetime": 1249409679,
             "measuregrps": [{
                  "grpid": 2909,
@@ -95,12 +95,12 @@ class TestWithingsModels(WithingsTestBase):
                  "measures": []
             }]
         })
-        withings_measure = withings_measures[0]
+        nokia_measure = nokia_measures[0]
         measure_grp = MeasureGroup.objects.create(
-            user=self.user, grpid=withings_measure.grpid,
-            attrib=withings_measure.attrib, category=withings_measure.category,
-            date=withings_measure.date.datetime,
-            updatetime=withings_measures.updatetime.datetime)
+            user=self.user, grpid=nokia_measure.grpid,
+            attrib=nokia_measure.attrib, category=nokia_measure.category,
+            date=nokia_measure.date.datetime,
+            updatetime=nokia_measures.updatetime.datetime)
         measure = Measure.objects.create(
             group=measure_grp, value=79300, measure_type=1, unit=-3)
         self.assertEqual(measure.__str__(), 'Weight (kg): 79.3')

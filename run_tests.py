@@ -19,7 +19,7 @@ def run_tests():
                       help="coverage level, 0=no coverage, 1=without branches,"
                       " 2=with branches")
     options, tests = parser.parse_args()
-    tests = tests or ['withingsapp']
+    tests = tests or ['nokiaapp']
 
     covlevel = int(options.coverage)
     if covlevel:

@@ -5,12 +5,12 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from freezegun import freeze_time
 
-from withings import WithingsApi, WithingsMeasures
+from nokia import NokiaApi, NokiaMeasures
 
-from withingsapp import utils
-from withingsapp.models import WithingsUser, MeasureGroup, Measure
+from nokiaapp import utils
+from nokiaapp.models import NokiaUser, MeasureGroup, Measure
 
-from .base import WithingsTestBase
+from .base import NokiaTestBase
 
 try:
     from unittest import mock
@@ -18,29 +18,29 @@ except ImportError:  # Python 2.x fallback
     import mock
 
 
-class TestRetrievalTask(WithingsTestBase):
+class TestRetrievalTask(NokiaTestBase):
     def setUp(self):
         super(TestRetrievalTask, self).setUp()
         self.startdate = 1222930967
         self.enddate = 1222930969
 
-    def _receive_withings_notification(self, status_code=204):
+    def _receive_nokia_notification(self, status_code=204):
         post_params = {
-            'userid': self.withings_user.withings_user_id,
+            'userid': self.nokia_user.nokia_user_id,
             'startdate': self.startdate,
             'enddate': self.enddate
         }
         res = self.client.post(
-            reverse('withings-notification', kwargs={'appli': 1}),
+            reverse('nokia-notification', kwargs={'appli': 1}),
             data=post_params)
         self.assertEqual(res.status_code, status_code)
 
     @freeze_time("2012-01-14T12:00:01", tz_offset=-6)
-    @mock.patch('withingsapp.utils.get_withings_data')
-    def test_notification(self, get_withings_data):
+    @mock.patch('nokiaapp.utils.get_nokia_data')
+    def test_notification(self, get_nokia_data):
         # Check that celery tasks get made when a notification is received
-        # from Withings.
-        get_withings_data.return_value = WithingsMeasures({
+        # from Nokia.
+        get_nokia_data.return_value = NokiaMeasures({
             "updatetime": 1249409679,
             "measuregrps": [{
                 "grpid": 2909,
@@ -83,13 +83,13 @@ class TestRetrievalTask(WithingsTestBase):
                 }]
             }]
         })
-        self.assertEqual(self.withings_user.last_update, None)
+        self.assertEqual(self.nokia_user.last_update, None)
         self.assertEqual(MeasureGroup.objects.count(), 0)
         self.assertEqual(Measure.objects.count(), 0)
-        self._receive_withings_notification()
-        self.assertEqual(get_withings_data.call_count, 1)
-        self.withings_user = WithingsUser.objects.get(id=self.withings_user.id)
-        self.assertEqual(self.withings_user.last_update.isoformat(),
+        self._receive_nokia_notification()
+        self.assertEqual(get_nokia_data.call_count, 1)
+        self.nokia_user = NokiaUser.objects.get(id=self.nokia_user.id)
+        self.assertEqual(self.nokia_user.last_update.isoformat(),
                          "2012-01-14T12:00:01+00:00")
         self.assertEqual(MeasureGroup.objects.count(), 3)
         self.assertEqual(Measure.objects.count(), 5)
@@ -101,5 +101,5 @@ class TestRetrievalTask(WithingsTestBase):
 
     def test_notification_error(self):
         res = self.client.post(
-            reverse('withings-notification', kwargs={'appli': 4}))
+            reverse('nokia-notification', kwargs={'appli': 4}))
         self.assertEqual(res.status_code, 404)

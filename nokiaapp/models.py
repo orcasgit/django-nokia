@@ -4,24 +4,23 @@ from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from math import pow
-from withings import WithingsCredentials, WithingsApi
 
 
 UserModel = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
 @python_2_unicode_compatible
-class WithingsUser(models.Model):
-    """ A user's Withings credentials, allowing API access """
+class NokiaUser(models.Model):
+    """ A user's Nokia credentials, allowing API access """
     user = models.OneToOneField(UserModel, help_text='The user')
-    withings_user_id = models.IntegerField(help_text='The withings user ID')
+    nokia_user_id = models.IntegerField(help_text='The nokia user ID')
     access_token = models.TextField(help_text='OAuth access token')
     access_token_secret = models.TextField(
         help_text='OAuth access token secret')
     last_update = models.DateTimeField(
         null=True,
         blank=True,
-        help_text="The datetime the user's withings data was last updated")
+        help_text="The datetime the user's nokia data was last updated")
 
     def __str__(self):
         if hasattr(self.user, 'get_username'):
@@ -33,7 +32,7 @@ class WithingsUser(models.Model):
         return {
             'access_token': self.access_token,
             'access_token_secret': self.access_token_secret,
-            'user_id': self.withings_user_id
+            'user_id': self.nokia_user_id
         }
 
 
@@ -41,7 +40,7 @@ class WithingsUser(models.Model):
 class MeasureGroup(models.Model):
     """
     A group of measurements, i.e. Diastolic/Systolic blood pressure:
-    http://oauth.withings.com/api/doc#api-Measure-get_measure
+    http://oauth.nokia.com/api/doc#api-Measure-get_measure
     """
     non_ambiguous_device = 0
     ambiguous_device = 1
@@ -61,7 +60,7 @@ class MeasureGroup(models.Model):
     )
 
     user = models.ForeignKey(UserModel, help_text="The group's user")
-    grpid = models.IntegerField(help_text='The group ID, assigned by withings')
+    grpid = models.IntegerField(help_text='The group ID, assigned by nokia')
     attrib = models.IntegerField(
         choices=ATTRIB_TYPES,
         help_text="The group's attribution, one of: {}".format(
@@ -85,17 +84,17 @@ class MeasureGroup(models.Model):
 
     @classmethod
     def create_from_measures(cls, user, measures):
-        for withings_measure in measures:
-            if MeasureGroup.objects.filter(grpid=withings_measure.grpid,
+        for nokia_measure in measures:
+            if MeasureGroup.objects.filter(grpid=nokia_measure.grpid,
                                            user=user).exists():
                 continue
             measure_grp = MeasureGroup.objects.create(
-                user=user, grpid=withings_measure.grpid,
-                attrib=withings_measure.attrib,
-                category=withings_measure.category,
-                date=withings_measure.date.datetime,
+                user=user, grpid=nokia_measure.grpid,
+                attrib=nokia_measure.attrib,
+                category=nokia_measure.category,
+                date=nokia_measure.date.datetime,
                 updatetime=measures.updatetime.datetime)
-            for measure in withings_measure.measures:
+            for measure in nokia_measure.measures:
                 Measure.objects.create(
                     group=measure_grp, value=measure['value'],
                     measure_type=measure['type'], unit=measure['unit'])
@@ -105,7 +104,7 @@ class MeasureGroup(models.Model):
 class Measure(models.Model):
     """
     A body measurement:
-    http://oauth.withings.com/api/doc#api-Measure-get_measure
+    http://oauth.nokia.com/api/doc#api-Measure-get_measure
     """
     weight = 1
     height = 4

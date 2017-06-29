@@ -13,12 +13,12 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from withings import WithingsApi, WithingsCredentials, WithingsMeasures
+from nokia import NokiaApi, NokiaCredentials, NokiaMeasures
 
-from withingsapp.models import WithingsUser
+from nokiaapp.models import NokiaUser
 
 
-class WithingsTestBase(TestCase):
+class NokiaTestBase(TestCase):
     TEST_SERVER = 'http://testserver'
 
     def setUp(self):
@@ -26,11 +26,11 @@ class WithingsTestBase(TestCase):
         self.password = self.random_string(25)
         self.user = self.create_user(username=self.username,
                                      password=self.password)
-        self.withings_user = self.create_withings_user(user=self.user)
+        self.nokia_user = self.create_nokia_user(user=self.user)
         self.get_user = {
             'id': 1111111, 'birthdate': 364305600, 'lastname': 'Baggins',
             'ispublic': 255, 'firstname': 'Frodo', 'fatmethod': 131}
-        self.get_measures = WithingsMeasures({
+        self.get_measures = NokiaMeasures({
             "updatetime": 1249409679,
             "measuregrps": [{
                 "grpid": 2909,
@@ -90,15 +90,15 @@ class WithingsTestBase(TestCase):
         user = User.objects.get(pk=user.pk)
         return user
 
-    def create_withings_user(self, **kwargs):
+    def create_nokia_user(self, **kwargs):
         defaults = {
             'user': kwargs.pop('user', self.create_user()),
-            'withings_user_id': random.randint(111111, 999999),
+            'nokia_user_id': random.randint(111111, 999999),
             'access_token': self.random_string(25),
             'access_token_secret': self.random_string(25),
         }
         defaults.update(kwargs)
-        return WithingsUser.objects.create(**defaults)
+        return NokiaUser.objects.create(**defaults)
 
     def assertRedirectsNoFollow(self, response, url, status_code=302):
         """
@@ -134,7 +134,7 @@ class WithingsTestBase(TestCase):
         error_response.content = '{"errors": []}'.encode('utf8')
         return error_response
 
-    @patch('withingsapp.utils.get_withings_data')
+    @patch('nokiaapp.utils.get_nokia_data')
     def _mock_utility(self, utility=None, error=None, response=None, **kwargs):
         if error:
             utility.side_effect = error(self._error_response())
