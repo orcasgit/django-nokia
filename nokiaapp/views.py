@@ -6,7 +6,6 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 
 from . import utils
 from .models import NokiaUser, MeasureGroup
@@ -191,7 +190,6 @@ def logout(request):
 
 
 @csrf_exempt
-@require_POST
 def notification(request, appli):
     """ Receive notification from Nokia.
 
@@ -201,11 +199,13 @@ def notification(request, appli):
     URL name:
         `nokia-notification`
     """
+    if request.method == 'HEAD':
+        return HttpResponse()
 
     # The updates come in as a POST request with the necessary data
     uid = request.POST.get('userid')
 
-    if uid:
+    if uid and request.method == 'POST':
         for user in NokiaUser.objects.filter(nokia_user_id=uid):
             kwargs = {}
             if user.last_update:
@@ -216,5 +216,5 @@ def notification(request, appli):
             user.save()
         return HttpResponse(status=204)
 
-    # if someone enters the url into the browser, raise a 404
+    # If GET request or POST with bad data, raise a 404
     raise Http404

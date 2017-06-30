@@ -1,13 +1,10 @@
 import arrow
-import json
 
-from datetime import datetime
 from django.core.urlresolvers import reverse
 from freezegun import freeze_time
 
-from nokia import NokiaApi, NokiaMeasures
+from nokia import NokiaMeasures
 
-from nokiaapp import utils
 from nokiaapp.models import NokiaUser, MeasureGroup, Measure
 
 from .base import NokiaTestBase
@@ -34,6 +31,18 @@ class TestRetrievalTask(NokiaTestBase):
             reverse('nokia-notification', kwargs={'appli': 1}),
             data=post_params)
         self.assertEqual(res.status_code, status_code)
+
+    def test_notification_get(self):
+        res = self.client.get(
+            reverse('nokia-notification', kwargs={'appli': 1}))
+
+        self.assertEqual(res.status_code, 404)
+
+    def test_notification_head(self):
+        res = self.client.head(
+            reverse('nokia-notification', kwargs={'appli': 1}))
+
+        self.assertEqual(res.status_code, 200)
 
     @freeze_time("2012-01-14T12:00:01", tz_offset=-6)
     @mock.patch('nokiaapp.utils.get_nokia_data')
@@ -70,8 +79,7 @@ class TestRetrievalTask(NokiaTestBase):
                     "type": 8,
                     "unit": -3
                 }]
-            },
-            {
+            }, {
                 "grpid": 2908,
                 "attrib": 0,
                 "date": 1222930968,
