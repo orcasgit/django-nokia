@@ -83,10 +83,12 @@ def complete(request):
     except:
         return redirect(reverse('nokia-error'))
 
-
-    user_updates = {'access_token': creds.access_token,
-                    'access_token_secret': creds.access_token_secret,
-                    'nokia_user_id': user_id}
+    user_updates = {
+        'access_token': creds.access_token,
+        'access_token_secret': creds.access_token_secret,
+        'nokia_user_id': user_id,
+        'last_update': timezone.now(),
+    }
     nokia_user = NokiaUser.objects.filter(user=request.user)
     if nokia_user.exists():
         nokia_user.update(**user_updates)
@@ -98,8 +100,6 @@ def complete(request):
     api = utils.create_nokia(**nokia_user.get_user_data())
     request.session['nokia_profile'] = api.get_user()
     MeasureGroup.create_from_measures(request.user, api.get_measures())
-    request.user.last_update = timezone.now()
-    request.user.save()
     if utils.get_setting('NOKIA_SUBSCRIBE'):
         for appli in [1, 4]:
             notification_url = request.build_absolute_uri(

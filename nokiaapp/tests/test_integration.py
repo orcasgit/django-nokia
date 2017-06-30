@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
+from django.utils import timezone
+from freezegun import freeze_time
 from nokia import NokiaApi, NokiaAuth, NokiaCredentials
 
 from nokiaapp import utils
@@ -203,6 +205,7 @@ class TestCompleteView(NokiaTestBase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(NokiaUser.objects.count(), 0)
 
+    @freeze_time("2012-01-14T12:00:01", tz_offset=0)
     def test_next(self):
         """
         Complete view should redirect to session['nokia_next'] if available.
@@ -215,6 +218,7 @@ class TestCompleteView(NokiaTestBase):
         self.assertEqual(nokia_user.access_token, self.access_token)
         self.assertEqual(nokia_user.access_token_secret,
                          self.access_token_secret)
+        self.assertEqual(nokia_user.last_update, timezone.now())
         self.assertEqual(nokia_user.nokia_user_id, self.nokia_user_id)
 
     def test_no_token(self):
@@ -232,6 +236,7 @@ class TestCompleteView(NokiaTestBase):
         self.assertRedirectsNoFollow(response, reverse('nokia-error'))
         self.assertEqual(NokiaUser.objects.count(), 0)
 
+    @freeze_time("2012-01-14T12:00:01", tz_offset=0)
     def test_integrated(self):
         """
         Complete view should overwrite existing credentials for this user.
@@ -243,6 +248,7 @@ class TestCompleteView(NokiaTestBase):
         self.assertEqual(nokia_user.access_token, self.access_token)
         self.assertEqual(nokia_user.access_token_secret,
                          self.access_token_secret)
+        self.assertEqual(nokia_user.last_update, timezone.now())
         self.assertEqual(nokia_user.nokia_user_id, self.nokia_user_id)
         self.assertRedirectsNoFollow(
             response, utils.get_setting('NOKIA_LOGIN_REDIRECT'))
