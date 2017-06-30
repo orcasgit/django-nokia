@@ -39,6 +39,7 @@ def get_consumer_key_and_secret(consumer_key=None, consumer_secret=None):
 
     return (consumer_key, consumer_secret)
 
+
 def is_integrated(user):
     """Returns ``True`` if we have Oauth info for the user.
 

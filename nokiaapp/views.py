@@ -195,7 +195,7 @@ def logout(request):
 def notification(request, appli):
     """ Receive notification from Nokia.
 
-    Create celery tasks to get the data. More information here:
+    More information here:
     https://developer.health.nokia.com/api/doc#api-Notification-Notification_callback
 
     URL name:
@@ -205,7 +205,7 @@ def notification(request, appli):
     # The updates come in as a POST request with the necessary data
     uid = request.POST.get('userid')
 
-    if uid and request.POST.get('startdate') and request.POST.get('enddate'):
+    if uid:
         for user in NokiaUser.objects.filter(nokia_user_id=uid):
             kwargs = {}
             if user.last_update:
