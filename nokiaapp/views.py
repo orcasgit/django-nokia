@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
+from django.urls import NoReverseMatch
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
@@ -163,15 +164,24 @@ def logout(request):
         `nokia-logout`
     """
     nokia_user = NokiaUser.objects.filter(user=request.user)
+    urls = []
+    for appli in [1, 4]:
+        for app in ['nokia', 'withings']:
+            try:
+                urls.append(request.build_absolute_uri(reverse(
+                    '{}-notification'.format(app),
+                    kwargs={'appli': appli}
+                )))
+            except NoReverseMatch:
+                # The library user does not have the legacy withings URLs
+                pass
     if nokia_user.exists() and utils.get_setting('NOKIA_SUBSCRIBE'):
         try:
             api = utils.create_nokia(**nokia_user[0].get_user_data())
-            for appli in [1, 4]:
-                notification_url = request.build_absolute_uri(
-                    reverse('nokia-notification', kwargs={'appli': appli}))
-                subs = api.list_subscriptions(appli=appli)
-                if len(subs) > 0:
-                    api.unsubscribe(notification_url, appli=appli)
+            subs = api.list_subscriptions()
+            for sub in subs:
+                if sub['callbackurl'] in urls:
+                    api.unsubscribe(sub['callbackurl'], appli=sub['appli'])
         except:
             return redirect(reverse('nokia-error'))
     nokia_user.delete()

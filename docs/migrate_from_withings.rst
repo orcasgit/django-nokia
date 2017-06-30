@@ -9,12 +9,12 @@ you need to take to keep things running smoothly.
 2. Add `nokiaapp` to your INSTALLED_APPS setting and remove `withingsapp`
 
 3. Adjust your URLconf to retain the old withings routes, while adding nokia
-   routes. This makes sure you can continue receiving notifications of old
-   subscriptions. Make sure the ``nokia/`` route is second so that URL
-   reversals resolve to it. If you don't have old subscriptions, you may not
-   need the old ``withings/`` routes::
+   routes. Make sure to include `'nokiaapp.legacy_urls'`` for the legacy
+   urls so we can distinguish between the two. This makes sure you can
+   continue receiving notifications of old subscriptions. If you don't
+   have old subscriptions, you may not need the old ``withings/`` routes::
 
-    url(r'^withings/', include('nokiaapp.urls')),
+    url(r'^withings/', include('nokiaapp.legacy_urls')),
     url(r'^nokia/', include('nokiaapp.urls')),
 
 4. Adjust all ``WITHINGS_<SETTING>`` settings to ``NOKIA_<SETTING>``

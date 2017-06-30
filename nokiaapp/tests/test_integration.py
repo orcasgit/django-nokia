@@ -274,17 +274,23 @@ class TestLogoutView(NokiaTestBase):
 
     def setUp(self):
         super(TestLogoutView, self).setUp()
-        NokiaApi.list_subscriptions = mock.MagicMock(return_value=[
-            {'comment': 'django-nokia', 'expires': 2147483647}])
+        NokiaApi.list_subscriptions = mock.MagicMock(return_value=[{
+            'comment': 'django-nokia',
+            'expires': 2147483647,
+            'appli': 1,
+            'callbackurl': 'http://testserver/notification/1/',
+        }, {
+            'comment': 'django-nokia',
+            'expires': 2147483647,
+            'appli': 4,
+            'callbackurl': 'http://testserver/notification/4/',
+        }])
         NokiaApi.unsubscribe = mock.MagicMock(return_value=None)
 
     def test_get(self):
         """Logout view should remove associated NokiaUser and redirect."""
         response = self._get()
-        self.assertEqual(NokiaApi.list_subscriptions.call_count, 2)
-        NokiaApi.list_subscriptions.assert_has_calls([
-            mock.call(appli=appli) for appli in [1, 4]
-        ])
+        NokiaApi.list_subscriptions.assert_called_once_with()
         self.assertEqual(NokiaApi.unsubscribe.call_count, 2)
         NokiaApi.unsubscribe.assert_has_calls([
             mock.call('http://testserver/notification/%s/' % appli,
