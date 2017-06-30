@@ -4,13 +4,18 @@ from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
-from django.urls import NoReverseMatch
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from . import utils
 from .models import NokiaUser, MeasureGroup
+
+try:
+    from django.urls import NoReverseMatch
+except ImportError:
+    # Fallback for older Djangos
+    from django.core.urlresolvers import NoReverseMatch
 
 
 @login_required
