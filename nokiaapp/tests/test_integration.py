@@ -48,7 +48,7 @@ class TestIntegrationDecorator(NokiaTestBase):
         def mock_error(request, message, *args, **kwargs):
             self.messages.append(message)
 
-        with mock.patch.object(messages, 'error', mock_error) as error:
+        with mock.patch.object(messages, 'error', mock_error):
             return nokia_integration_warning(msg=msg)(self.fake_view)(
                 self.fake_request)
 
@@ -60,7 +60,7 @@ class TestIntegrationDecorator(NokiaTestBase):
         self.assertEqual(results, "hello")
         self.assertEqual(len(self.messages), 1)
         self.assertEqual(self.messages[0],
-                utils.get_setting('NOKIA_DECORATOR_MESSAGE'))
+                         utils.get_setting('NOKIA_DECORATOR_MESSAGE'))
 
     def test_is_integrated(self):
         """Decorator should have no effect if user is integrated."""
@@ -77,7 +77,7 @@ class TestIntegrationDecorator(NokiaTestBase):
         self.assertEqual(results, "hello")
         self.assertEqual(len(self.messages), 1)
         self.assertEqual(self.messages[0],
-                utils.get_setting('NOKIA_DECORATOR_MESSAGE'))
+                         utils.get_setting('NOKIA_DECORATOR_MESSAGE'))
 
     def test_custom_msg(self):
         """Decorator should support a custom message string."""
@@ -92,7 +92,9 @@ class TestIntegrationDecorator(NokiaTestBase):
     def test_custom_msg_func(self):
         """Decorator should support a custom message function."""
         NokiaUser.objects.all().delete()
-        msg = lambda request: "message to {0}".format(request.user)
+
+        def msg(request):
+            return "message to {0}".format(request.user)
         results = self._mock_decorator(msg)
 
         self.assertEqual(results, "hello")
@@ -303,7 +305,7 @@ class TestLogoutView(NokiaTestBase):
                       appli=appli) for appli in [1, 4]
         ])
         self.assertRedirectsNoFollow(response,
-            utils.get_setting('NOKIA_LOGIN_REDIRECT'))
+                                     utils.get_setting('NOKIA_LOGIN_REDIRECT'))
         self.assertEqual(NokiaUser.objects.count(), 0)
 
     def test_unauthenticated(self):
@@ -318,7 +320,7 @@ class TestLogoutView(NokiaTestBase):
         self.nokia_user.delete()
         response = self._get()
         self.assertRedirectsNoFollow(response,
-            utils.get_setting('NOKIA_LOGIN_REDIRECT'))
+                                     utils.get_setting('NOKIA_LOGIN_REDIRECT'))
         self.assertEqual(NokiaUser.objects.count(), 0)
 
     def test_next(self):
