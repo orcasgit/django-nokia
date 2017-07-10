@@ -1,5 +1,6 @@
 *.pyc
 .tox
+dist
 django_nokia.egg-info
 .coverage
 docs/_build
