@@ -5,7 +5,7 @@ PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'django_withings',
+        'NAME': 'django_nokia',
     }
 }
 INSTALLED_APPS = [
@@ -13,25 +13,25 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
-    'withingsapp',
+    'nokiaapp',
 ]
 SECRET_KEY = 'something-secret'
-ROOT_URLCONF = 'withingsapp.urls'
+ROOT_URLCONF = 'nokiaapp.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
         'DIRS': [
-            os.path.join(PROJECT_PATH, 'withingsapp', 'templates'),
-            os.path.join(PROJECT_PATH, 'withingsapp', 'tests', 'templates')
+            os.path.join(PROJECT_PATH, 'nokiaapp', 'templates'),
+            os.path.join(PROJECT_PATH, 'nokiaapp', 'tests', 'templates')
         ],
     },
 ]
 
-WITHINGS_CONSUMER_KEY = ''
-WITHINGS_CONSUMER_SECRET = ''
-WITHINGS_SUBSCRIBE = True
+NOKIA_CONSUMER_KEY = ''
+NOKIA_CONSUMER_SECRET = ''
+NOKIA_SUBSCRIBE = True
 USE_TZ = True
 TIME_ZONE = 'America/Chicago'
 
@@ -44,7 +44,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'withingsapp.tasks': {'handlers': ['null'], 'level': 'DEBUG'},
+        'nokiaapp.tasks': {'handlers': ['null'], 'level': 'DEBUG'},
     },
 }
 

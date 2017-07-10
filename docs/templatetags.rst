@@ -1,9 +1,9 @@
 Template tags
-==============
+=============
 
-.. _is_integrated_with_withings:
+.. _is_integrated_with_nokia:
 
-is_integrated_with_withings
+is_integrated_with_nokia
 ---------------------------
 
-.. autofunction:: withingsapp.templatetags.withings.is_integrated_with_withings
+.. autofunction:: nokiaapp.templatetags.nokia.is_integrated_with_nokia

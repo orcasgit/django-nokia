@@ -1,25 +1,25 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from withings import WithingsApi, WithingsAuth, WithingsCredentials
+from nokia import NokiaApi, NokiaAuth, NokiaCredentials
 
 from . import defaults
-from .models import WithingsUser
+from .models import NokiaUser
 
 
-def create_withings(consumer_key=None, consumer_secret=None, **kwargs):
-    """ Shortcut to create a WithingsApi instance. """
+def create_nokia(consumer_key=None, consumer_secret=None, **kwargs):
+    """ Shortcut to create a NokiaApi instance. """
 
     consumer_key, consumer_secret = get_consumer_key_and_secret(
         consumer_key=consumer_key, consumer_secret=consumer_secret)
-    creds = WithingsCredentials(consumer_key=consumer_key,
-                                consumer_secret=consumer_secret, **kwargs)
-    return WithingsApi(creds)
+    creds = NokiaCredentials(consumer_key=consumer_key,
+                             consumer_secret=consumer_secret, **kwargs)
+    return NokiaApi(creds)
 
 
-def create_withings_auth():
+def create_nokia_auth():
     consumer_key, consumer_secret = get_consumer_key_and_secret()
-    return WithingsAuth(consumer_key, consumer_secret)
+    return NokiaAuth(consumer_key, consumer_secret)
 
 
 def get_consumer_key_and_secret(consumer_key=None, consumer_secret=None):
@@ -28,9 +28,9 @@ def get_consumer_key_and_secret(consumer_key=None, consumer_secret=None):
     specified in settings are used.
     """
     if consumer_key is None:
-        consumer_key = get_setting('WITHINGS_CONSUMER_KEY')
+        consumer_key = get_setting('NOKIA_CONSUMER_KEY')
     if consumer_secret is None:
-        consumer_secret = get_setting('WITHINGS_CONSUMER_SECRET')
+        consumer_secret = get_setting('NOKIA_CONSUMER_SECRET')
 
     if consumer_key is None or consumer_secret is None:
         raise ImproperlyConfigured(
@@ -38,6 +38,7 @@ def get_consumer_key_and_secret(consumer_key=None, consumer_secret=None):
             "explicitly specified or set in your Django settings")
 
     return (consumer_key, consumer_secret)
+
 
 def is_integrated(user):
     """Returns ``True`` if we have Oauth info for the user.
@@ -47,15 +48,15 @@ def is_integrated(user):
     :param user: A Django User.
     """
     if user.is_authenticated() and user.is_active:
-        return WithingsUser.objects.filter(user=user).exists()
+        return NokiaUser.objects.filter(user=user).exists()
     return False
 
 
-def get_withings_data(withings_user, **kwargs):
+def get_nokia_data(nokia_user, **kwargs):
     """
-    Retrieves withings data for the date range
+    Retrieves nokia data for the date range
     """
-    api = create_withings(**withings_user.get_user_data())
+    api = create_nokia(**nokia_user.get_user_data())
     return api.get_measures(**kwargs)
 
 

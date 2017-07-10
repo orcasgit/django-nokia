@@ -3,16 +3,16 @@ from setuptools import setup, find_packages
 required = [line for line in open('requirements/base.txt').read().split("\n")]
 
 setup(
-    name="django-withings",
-    version=__import__("withingsapp").__version__,
+    name="django-nokia",
+    version=__import__("nokiaapp").__version__,
     author="orcas",
     author_email="bpitcher@orcasinc.com",
     packages=find_packages(),
     install_requires=["setuptools"] + required,
     include_package_data=True,
-    url="https://github.com/orcasgit/django-withings/",
+    url="https://github.com/orcasgit/django-nokia/",
     license="License :: OSI Approved :: Apache Software License",
-    description="Django integration for python-withings",
+    description="Django integration for python-nokia",
     long_description=open("README.md").read(),
     classifiers=[
         "Development Status :: 3 - Alpha",

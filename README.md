@@ -1,11 +1,14 @@
-django-withings
-===============
-[![Build Status](https://travis-ci.org/orcasgit/django-withings.svg?branch=master)](https://travis-ci.org/orcasgit/django-withings) [![Coverage Status](https://coveralls.io/repos/orcasgit/django-withings/badge.png)](https://coveralls.io/r/orcasgit/django-withings) [![Requirements Status](https://requires.io/github/orcasgit/django-withings/requirements.png?branch=master)](https://requires.io/github/orcasgit/django-withings/requirements/?branch=master)
+django-nokia
+============
+[![Build Status](https://travis-ci.org/orcasgit/django-nokia.svg?branch=master)](https://travis-ci.org/orcasgit/django-nokia) [![Coverage Status](https://coveralls.io/repos/orcasgit/django-nokia/badge.png)](https://coveralls.io/r/orcasgit/django-nokia) [![Requirements Status](https://requires.io/github/orcasgit/django-nokia/requirements.png?branch=master)](https://requires.io/github/orcasgit/django-nokia/requirements/?branch=master)
 
-Django-withings is a Django app for integrating a user's Withings data into your
+Django-nokia is a Django app for integrating a user's Nokia data into your
 site.
 
 It handles the details of getting your app authorized to access your user's
-Withings data via the Withings API.
+Nokia data via the Nokia Health API.
 
-Documentation is hosted on <http://django-withings.readthedocs.org>.
+NOTE: If you are coming from django-withings, there are some
+[extra steps](docs/migrate_from_withings.rst) needed to migrate.
+
+Documentation is hosted on <http://django-nokia.readthedocs.org>.

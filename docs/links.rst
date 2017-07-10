@@ -1,6 +1,6 @@
 Links to related information
 ============================
 
-- `Django-withings home <https://github.com/orcasgit/django-withings>`_
-- `Withings developer site <http://oauth.withings.com/api>`_
-- `Python-withings library <https://github.com/orcasgit/python-withings>`_
+- `Django-nokia home <https://github.com/orcasgit/django-nokia>`_
+- `Nokia developer site <https://developer.health.nokia.com/api/>`_
+- `Python-nokia library <https://github.com/orcasgit/python-nokia>`_

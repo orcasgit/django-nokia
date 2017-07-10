@@ -6,16 +6,17 @@ from django.conf import settings
 
 
 class Migration(migrations.Migration):
+    initial = True
 
     dependencies = [
-        ('withingsapp', '0001_initial'),
+        ('nokiaapp', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='measure',
             name='group',
-            field=models.ForeignKey(help_text=b"The measurement's group", to='withingsapp.MeasureGroup'),
+            field=models.ForeignKey(help_text=b"The measurement's group", to='MeasureGroup'),
         ),
         migrations.AlterField(
             model_name='measure',
