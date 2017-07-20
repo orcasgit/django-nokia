@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.signals import user_logged_in
 from django.core.urlresolvers import reverse
@@ -15,6 +17,8 @@ try:
 except ImportError:
     # Fallback for older Djangos
     from django.core.urlresolvers import NoReverseMatch
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -210,10 +214,14 @@ def notification(request, appli):
             kwargs = {}
             if user.last_update:
                 kwargs['lastupdate'] = user.last_update
-            measures = utils.get_nokia_data(user, **kwargs)
-            MeasureGroup.create_from_measures(user.user, measures)
-            user.last_update = timezone.now()
-            user.save()
+            try:
+                measures = utils.get_nokia_data(user, **kwargs)
+            except Exception:
+                logger.exception("Error getting nokia user measures")
+            else:
+                MeasureGroup.create_from_measures(user.user, measures)
+                user.last_update = timezone.now()
+                user.save()
         return HttpResponse(status=204)
 
     # If GET request or POST with bad data, raise a 404
