@@ -12,7 +12,8 @@ UserModel = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 @python_2_unicode_compatible
 class NokiaUser(models.Model):
     """ A user's Nokia credentials, allowing API access """
-    user = models.OneToOneField(UserModel, help_text='The user')
+    user = models.OneToOneField(
+        UserModel, help_text='The user', on_delete=models.CASCADE)
     nokia_user_id = models.IntegerField(help_text='The nokia user ID')
     access_token = models.TextField(help_text='OAuth access token')
     access_token_secret = models.TextField(
