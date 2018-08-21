@@ -16,7 +16,10 @@ def migrate_to_oauth2(apps, schema_editor):
     auth = NokiaAuth(
         get_setting('NOKIA_CLIENT_ID'), get_setting('NOKIA_CONSUMER_SECRET'))
     for user in NokiaUser.objects.all():
-        auth.migrate_from_oauth1(user.access_token, user.access_token_secret)
+        user.refresh_cb(auth.migrate_from_oauth1(
+            user.access_token,
+            user.access_token_secret
+        ))
 
 
 class Migration(migrations.Migration):
