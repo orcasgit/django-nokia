@@ -29,8 +29,9 @@ TEMPLATES = [
     },
 ]
 
-NOKIA_CONSUMER_KEY = ''
-NOKIA_CONSUMER_SECRET = ''
+NOKIA_CLIENT_ID = 'fakeid'
+NOKIA_CONSUMER_SECRET = 'fakesecret'
+NOKIA_CALLBACK_URI = 'http://127.0.0.1:8080'
 NOKIA_SUBSCRIBE = True
 USE_TZ = True
 TIME_ZONE = 'America/Chicago'

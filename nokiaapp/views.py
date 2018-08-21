@@ -44,10 +44,8 @@ def login(request):
         request.session.pop('nokia_next', None)
 
     callback_uri = request.build_absolute_uri(reverse('nokia-complete'))
-    auth = utils.create_nokia_auth()
-    auth_url = auth.get_authorize_url(callback_uri=callback_uri)
-    request.session['oauth_token'] = auth.oauth_token
-    request.session['oauth_secret'] = auth.oauth_secret
+    auth = utils.create_nokia_auth(callback_uri)
+    auth_url = auth.get_authorize_url()
     return redirect(auth_url)
 
 
@@ -71,25 +69,25 @@ def complete(request):
     URL name:
         `nokia-complete`
     """
-    auth = utils.create_nokia_auth()
+    callback_uri = request.build_absolute_uri(reverse('nokia-complete'))
+    auth = utils.create_nokia_auth(callback_uri)
     try:
-        auth.oauth_token = request.session.pop('oauth_token')
-        auth.oauth_secret = request.session.pop('oauth_secret')
-        verifier = request.GET.get('oauth_verifier')
-        user_id = request.GET.get('userid')
+        code = request.GET.get('code')
     except KeyError:
         return redirect(reverse('nokia-error'))
-    if not verifier or not user_id:
+    if not code:
         return redirect(reverse('nokia-error'))
     try:
-        creds = auth.get_credentials(verifier)
+        creds = auth.get_credentials(code)
     except:
         return redirect(reverse('nokia-error'))
 
     user_updates = {
         'access_token': creds.access_token,
-        'access_token_secret': creds.access_token_secret,
-        'nokia_user_id': user_id,
+        'token_expiry': creds.token_expiry,
+        'token_type': creds.token_type,
+        'refresh_token': creds.refresh_token,
+        'nokia_user_id': creds.user_id,
         'last_update': timezone.now(),
     }
     nokia_user = NokiaUser.objects.filter(user=request.user)

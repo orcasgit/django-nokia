@@ -1,6 +1,6 @@
 # Your Nokia access credentials, which must be requested from Nokia.
 # You must provide these in your project's settings.
-NOKIA_CONSUMER_KEY = None
+NOKIA_CLIENT_ID = None
 NOKIA_CONSUMER_SECRET = None
 
 # Where to redirect to after Nokia authentication is successfully completed.

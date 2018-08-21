@@ -1,4 +1,5 @@
 import arrow
+import datetime
 
 from django.conf import settings
 from django.db import models
@@ -14,9 +15,11 @@ class NokiaUser(models.Model):
     """ A user's Nokia credentials, allowing API access """
     user = models.OneToOneField(UserModel, help_text='The user')
     nokia_user_id = models.IntegerField(help_text='The nokia user ID')
-    access_token = models.TextField(help_text='OAuth access token')
-    access_token_secret = models.TextField(
-        help_text='OAuth access token secret')
+    access_token = models.TextField(help_text='OAuth2 access token')
+    token_expiry = models.IntegerField(help_text='Token expiration timestamp')
+    token_type = models.CharField(
+        max_length=32, help_text='Type of OAuth2 token')
+    refresh_token = models.TextField(help_text='OAuth2 refresh token')
     last_update = models.DateTimeField(
         null=True,
         blank=True,
@@ -31,9 +34,21 @@ class NokiaUser(models.Model):
     def get_user_data(self):
         return {
             'access_token': self.access_token,
-            'access_token_secret': self.access_token_secret,
-            'user_id': self.nokia_user_id
+            'token_expiry': self.token_expiry,
+            'token_type': self.token_type,
+            'refresh_token': self.refresh_token,
+            'user_id': self.nokia_user_id,
+            'refresh_cb': self.refresh_cb,
         }
+
+    def refresh_cb(self, token):
+        self.access_token = token['access_token']
+        self.token_expiry = int((
+            datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
+        ).total_seconds()) + int(token['expires_in'])
+        self.token_type = token['token_type']
+        self.refresh_token = token['refresh_token']
+        self.save()
 
 
 @python_2_unicode_compatible

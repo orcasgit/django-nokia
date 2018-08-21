@@ -7,37 +7,40 @@ from . import defaults
 from .models import NokiaUser
 
 
-def create_nokia(consumer_key=None, consumer_secret=None, **kwargs):
+def create_nokia(client_id=None, consumer_secret=None, **kwargs):
     """ Shortcut to create a NokiaApi instance. """
 
-    consumer_key, consumer_secret = get_consumer_key_and_secret(
-        consumer_key=consumer_key, consumer_secret=consumer_secret)
-    creds = NokiaCredentials(consumer_key=consumer_key,
-                             consumer_secret=consumer_secret, **kwargs)
-    return NokiaApi(creds)
+    refresh_cb = kwargs.pop('refresh_cb', None)
+    return NokiaApi(get_creds(
+        client_id=client_id,
+        consumer_secret=consumer_secret,
+        **kwargs
+    ), refresh_cb=refresh_cb)
 
 
-def create_nokia_auth():
-    consumer_key, consumer_secret = get_consumer_key_and_secret()
-    return NokiaAuth(consumer_key, consumer_secret)
+def create_nokia_auth(callback_uri):
+    creds = get_creds()
+
+    return NokiaAuth(creds.client_id, creds.consumer_secret, callback_uri)
 
 
-def get_consumer_key_and_secret(consumer_key=None, consumer_secret=None):
+def get_creds(client_id=None, consumer_secret=None, **kwargs):
     """
-    If consumer_key or consumer_secret are not provided, then the values
-    specified in settings are used.
+    If client_id or consumer_secret are not provided, then the values specified
+    in settings are used.
     """
-    if consumer_key is None:
-        consumer_key = get_setting('NOKIA_CONSUMER_KEY')
+    if client_id is None:
+        client_id = get_setting('NOKIA_CLIENT_ID')
     if consumer_secret is None:
         consumer_secret = get_setting('NOKIA_CONSUMER_SECRET')
 
-    if consumer_key is None or consumer_secret is None:
+    if not all([client_id, consumer_secret]):
         raise ImproperlyConfigured(
-            "Consumer key and consumer secret cannot be null, and must be "
+            "Neither lient id nor consumer secret can be null, they must be "
             "explicitly specified or set in your Django settings")
 
-    return (consumer_key, consumer_secret)
+    return NokiaCredentials(
+        client_id=client_id, consumer_secret=consumer_secret, **kwargs)
 
 
 def is_integrated(user):

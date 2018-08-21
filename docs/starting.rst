@@ -22,10 +22,10 @@ Getting started
 3. Register your site at the `Nokia developer site <https://developer.health.nokia.com/en/partner/add>`_
    to get a key and secret.
 
-4. Add settings for :ref:`NOKIA_CONSUMER_KEY` and
+4. Add settings for :ref:`NOKIA_CLIENT_ID` and
    :ref:`NOKIA_CONSUMER_SECRET`::
 
-    NOKIA_CONSUMER_KEY = 'abcdefg123456'
+    NOKIA_CLIENT_ID = 'abcdefg123456'
     NOKIA_CONSUMER_SECRET = 'abcdefg123456'
 
 5. If you need to change the defaults, add settings for

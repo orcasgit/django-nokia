@@ -1,4 +1,5 @@
 from mock import patch, Mock
+import datetime
 import random
 try:
     from urllib.parse import urlencode
@@ -95,7 +96,11 @@ class NokiaTestBase(TestCase):
             'user': kwargs.pop('user', self.create_user()),
             'nokia_user_id': random.randint(111111, 999999),
             'access_token': self.random_string(25),
-            'access_token_secret': self.random_string(25),
+            'token_expiry': int((
+                datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
+            ).total_seconds()) + 10,  # Expires in 10 seconds
+            'token_type': 'Bearer',
+            'refresh_token': self.random_string(25),
         }
         defaults.update(kwargs)
         return NokiaUser.objects.create(**defaults)
