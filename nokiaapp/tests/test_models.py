@@ -1,4 +1,5 @@
 import arrow
+import datetime
 
 from django.db import IntegrityError
 from nokia import NokiaCredentials, NokiaMeasures
@@ -19,9 +20,32 @@ class TestNokiaModels(NokiaTestBase):
         data = self.nokia_user.get_user_data()
         self.assertEqual(type(data), dict)
         self.assertEqual(data['access_token'], self.nokia_user.access_token)
-        self.assertEqual(data['access_token_secret'],
-                         self.nokia_user.access_token_secret)
+        self.assertEqual(data['token_expiry'], self.nokia_user.token_expiry)
+        self.assertEqual(data['token_type'], self.nokia_user.token_type)
+        self.assertEqual(data['refresh_token'], self.nokia_user.refresh_token)
         self.assertEqual(data['user_id'], self.nokia_user.nokia_user_id)
+        self.assertEqual(data['refresh_cb'], self.nokia_user.refresh_cb)
+
+        token = {
+            'access_token': 'newat',
+            'token_type': 'newtype',
+            'expires_in': 100,
+            'refresh_token': 'newrt',
+        }
+        now_stamp = int((
+            datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
+        ).total_seconds())
+
+        self.nokia_user.refresh_cb(token)
+
+        self.assertEqual(self.nokia_user.access_token, token['access_token'])
+        self.assertEqual(self.nokia_user.token_type, token['token_type'])
+        # Check 100 or 101 in case a second ticked over during testing
+        self.assertTrue(
+            self.nokia_user.token_expiry == (now_stamp + 100) or
+            self.nokia_user.token_expiry == (now_stamp + 101)
+        )
+        self.assertEqual(self.nokia_user.refresh_token, token['refresh_token'])
 
     def test_measure_group(self):
         """ Create a MeasureGroup model, check attributes and methods """

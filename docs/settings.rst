@@ -2,11 +2,11 @@ Settings
 ========
 
 .. index::
-    single: NOKIA_CONSUMER_KEY
+    single: NOKIA_CLIENT_ID
 
-.. _NOKIA_CONSUMER_KEY:
+.. _NOKIA_CLIENT_ID:
 
-NOKIA_CONSUMER_KEY
+NOKIA_CLIENT_ID
 ---------------------
 
 The key assigned to your app by Nokia when you register your app at
@@ -21,7 +21,7 @@ non-null value for this setting.
 NOKIA_CONSUMER_SECRET
 ------------------------
 
-The secret that goes with the NOKIA_CONSUMER_KEY. You must specify a non-null
+The secret that goes with the NOKIA_CLIENT_ID. You must specify a non-null
 value for this setting.
 
 .. _NOKIA_LOGIN_REDIRECT:
